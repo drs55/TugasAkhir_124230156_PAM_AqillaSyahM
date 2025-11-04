@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../models/services/service_auth.dart';
 import 'halaman_register.dart';
 import 'halaman_beranda.dart';
@@ -122,21 +123,23 @@ class _HalamanLoginState extends State<HalamanLogin> {
                     const SizedBox(height: 30),
 
                     // Title
-                    const Text(
+                    Text(
                       'HexoCar',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
+                      style: GoogleFonts.poppins(
+                        fontSize: 42,
+                        fontWeight: FontWeight.w700,
                         color: Colors.white,
-                        letterSpacing: 2,
+                        letterSpacing: 1.5,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       'Marketplace Mobil Terpercaya',
-                      style: TextStyle(
+                      style: GoogleFonts.poppins(
                         fontSize: 14,
-                        color: Colors.white70,
+                        color: Colors.white.withOpacity(0.9),
+                        fontWeight: FontWeight.w300,
+                        letterSpacing: 0.5,
                       ),
                     ),
                     const SizedBox(height: 50),

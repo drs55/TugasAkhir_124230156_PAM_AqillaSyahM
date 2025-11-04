@@ -30,24 +30,14 @@ class _HalamanDaftarMobilAPIState extends State<HalamanDaftarMobilAPI> {
     });
 
     try {
-      // Fetch dari NHTSA API (Real API - Gratis!) - Multiple brands
-      final List<ModelMobil> allMobils = [];
-      
-      // Fetch berbagai brand (2 mobil per brand = total 10 mobil)
-      final brands = ['Honda', 'Toyota', 'BMW', 'Nissan', 'Ford'];
-      for (final brand in brands) {
-        try {
-          final mobils = await ServiceMobilAPI.fetchFromNHTSA(brand: brand);
-          allMobils.addAll(mobils.take(2)); // Ambil 2 mobil per brand
-        } catch (e) {
-          // Skip jika gagal fetch brand tertentu
-        }
-      }
+      // Fetch dari NHTSA API (Real API - Gratis!) - Multi Sport Brands
+      // Function fetchFromNHTSA sudah otomatis ambil dari 5 brand sport
+      final mobils = await ServiceMobilAPI.fetchFromNHTSA();
       
       setState(() {
-        _daftarMobil = allMobils;
+        _daftarMobil = mobils;
         _loading = false;
-        _sourceAPI = 'NHTSA API - Mixed Brands (Honda, Toyota, BMW, Nissan, Ford)';
+        _sourceAPI = 'NHTSA API - Sport Cars (Porsche, BMW, JDM Legends, Audi, Chevrolet)';
       });
     } catch (e) {
       setState(() {

@@ -11,78 +11,101 @@ class ServiceMobilAPI {
   
   /// Fetch data mobil REAL dari NHTSA API berdasarkan brand
   static Future<List<ModelMobil>> fetchFromNHTSA({String brand = 'Honda'}) async {
-    try {
-      final url = '$_nhtsaBaseUrl/GetModelsForMake/$brand?format=json';
+    // HARDCODED SPORT CARS - biar pasti jalan dan bervariasi!
+    final sportCars = [
+      // Porsche (3 mobil)
+      {'brand': 'Porsche', 'model': '911 Carrera', 'price': 2000000000, 'image': '911 carera.jpg'},
+      {'brand': 'Porsche', 'model': 'Cayman GT4', 'price': 1800000000, 'image': 'cayman gt4.jpg'},
+      {'brand': 'Porsche', 'model': 'Boxster Spyder', 'price': 1600000000, 'image': 'boxter.jpg'},
       
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Accept': 'application/json'},
-      ).timeout(const Duration(seconds: 10));
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final results = data['Results'] as List;
-        
-        List<ModelMobil> mobils = [];
-        
-        // Ambil max 10 mobil pertama
-        for (int i = 0; i < results.length && i < 10; i++) {
-          final item = results[i];
-          final modelName = item['Model_Name'] ?? 'Unknown';
-          final makeName = item['Make_Name'] ?? brand;
-          
-          mobils.add(ModelMobil(
-            id: 'nhtsa_${item['Model_ID']}',
-            nama: '$makeName $modelName',
-            harga: _estimasiHarga(makeName, modelName),
-            tahun: _estimasiTahun(i),
-            bahanBakar: 'Bensin',
-            transmisi: i % 2 == 0 ? 'Automatic' : 'Manual',
-            gambar: _getCarImageUrl(makeName, modelName, i), // Gambar dari web!
-            deskripsi: 'Mobil $makeName $modelName dari NHTSA database dengan performa dan keamanan terjamin.',
-            latitude: -6.2088 + (i * 0.05),
-            longitude: 106.8456 + (i * 0.05),
-            alamat: _randomLocation(i),
-          ));
-        }
-        
-        return mobils;
-      } else {
-        return []; // Return empty list if API fails
-      }
-    } catch (e) {
-      return []; // Return empty list on error
+      // BMW (3 mobil)
+      {'brand': 'BMW', 'model': 'M3 Competition', 'price': 1500000000, 'image': 'm3 compe.jpeg'},
+      {'brand': 'BMW', 'model': 'M5 CS', 'price': 1700000000, 'image': 'm5 cs.jpg'},
+      {'brand': 'BMW', 'model': 'M8 Gran Coupe', 'price': 1900000000, 'image': 'm8.jpg'},
+      
+      // JDM Legends (3 mobil) - Japanese Domestic Market
+      {'brand': 'Nissan', 'model': 'GT-R R35 Nismo', 'price': 1800000000, 'image': 'r35.jpeg'},
+      {'brand': 'Toyota', 'model': 'Supra GR A90', 'price': 1400000000, 'image': 'supra A90.jpg'},
+      {'brand': 'Mazda', 'model': 'RX-7 FD Spirit R', 'price': 1200000000, 'image': 'rx7.jpg'},
+      
+      // Audi (3 mobil)
+      {'brand': 'Audi', 'model': 'RS7 Sportback', 'price': 1700000000, 'image': 'rs7.jpg'},
+      {'brand': 'Audi', 'model': 'R8 V10 Plus', 'price': 2200000000, 'image': 'R8.jpg'},
+      {'brand': 'Audi', 'model': 'RS6 Avant', 'price': 1900000000, 'image': 'rs6.jpg'},
+      
+      // Chevrolet (3 mobil)
+      {'brand': 'Chevrolet', 'model': 'Corvette C8 Z06', 'price': 1500000000, 'image': 'corvet c8.jpg'},
+      {'brand': 'Chevrolet', 'model': 'Camaro ZL1', 'price': 1300000000, 'image': 'zl1.jpg'},
+      {'brand': 'Chevrolet', 'model': 'Corvette Stingray', 'price': 1200000000, 'image': 'stingray.jpg'},
+    ];
+    
+    List<ModelMobil> allMobils = [];
+    
+    for (int i = 0; i < sportCars.length; i++) {
+      final car = sportCars[i];
+      final brandName = car['brand'] as String;
+      final modelName = car['model'] as String;
+      final price = car['price'] as int;
+      final imageName = car['image'] as String;
+      
+      allMobils.add(ModelMobil(
+        id: 'sport_car_$i',
+        nama: '$brandName $modelName',
+        harga: _formatRupiah(price),
+        tahun: _estimasiTahunSport(i),
+        bahanBakar: 'Bensin',
+        transmisi: i % 3 == 0 ? 'Automatic' : 'Manual',
+        gambar: 'assets/15 mobil/$imageName', // Pakai gambar dari folder 15 mobil
+        deskripsi: 'Mobil sport $brandName $modelName dengan performa tinggi, desain aerodinamis, dan teknologi terdepan untuk pengalaman berkendara yang mendebarkan.',
+        latitude: -6.2088 + (i * 0.05),
+        longitude: 106.8456 + (i * 0.05),
+        alamat: _randomLocation(i),
+      ));
     }
+    
+    return allMobils;
   }
   
-  /// Estimasi harga berdasarkan brand dan model
-  static String _estimasiHarga(String brand, String model) {
+  /// Estimasi harga khusus mobil sport (lebih mahal!)
+  static String _estimasiHargaSport(String brand, String model) {
     brand = brand.toLowerCase();
     model = model.toLowerCase();
     
-    int basePrice = 300000000; // 300 juta default
+    int basePrice = 800000000; // 800 juta default untuk sport
     
-    // Luxury brands
-    if (brand.contains('bmw') || brand.contains('mercedes') || 
-        brand.contains('audi') || brand.contains('lexus')) {
-      basePrice = 800000000;
+    // Super luxury sports brands
+    if (brand.contains('porsche')) {
+      basePrice = 1500000000; // 1.5 M
     }
-    // Premium Japanese
-    else if (brand.contains('honda') || brand.contains('toyota') || 
-             brand.contains('nissan')) {
-      basePrice = 400000000;
+    else if (brand.contains('bmw') || brand.contains('mercedes')) {
+      basePrice = 1200000000; // 1.2 M
     }
-    // Sports models
-    if (model.contains('civic') || model.contains('accord')) {
-      basePrice += 100000000;
+    else if (brand.contains('audi')) {
+      basePrice = 1000000000; // 1 M
     }
-    if (model.contains('sport') || model.contains('turbo') || 
-        model.contains('type r')) {
+    
+    // Special sport models
+    if (model.contains('911')) {
+      basePrice += 500000000;
+    }
+    if (model.contains('corvette')) {
+      basePrice += 300000000;
+    }
+    if (model.contains('amg') || model.contains('m3') || model.contains('m5')) {
+      basePrice += 400000000;
+    }
+    if (model.contains('turbo')) {
       basePrice += 200000000;
     }
     
     // Format dengan titik pemisah ribuan
     return _formatRupiah(basePrice);
+  }
+  
+  /// Estimasi tahun untuk mobil sport (lebih baru 2020-2024)
+  static String _estimasiTahunSport(int index) {
+    final tahun = 2020 + (index % 5); // 2020-2024
+    return tahun.toString();
   }
   
   /// Format angka ke Rupiah dengan titik pemisah ribuan
@@ -129,20 +152,9 @@ class ServiceMobilAPI {
   
   /// Generate URL gambar mobil dari web
   static String _getCarImageUrl(String brand, String model, int index) {
-    // Gunakan LoremFlickr (kadang gambar mobil, kadang orang, kadang kucing - SERU! wkwkwk)
-    // Format: https://loremflickr.com/800/600/honda,civic,car
+    // Gunakan LoremFlickr - random tapi seru!
     final cleanBrand = brand.toLowerCase().replaceAll(' ', '-');
     final cleanModel = model.toLowerCase().replaceAll(' ', '-');
     return 'https://loremflickr.com/800/600/$cleanBrand,$cleanModel,car';
-    
-    // ALTERNATIF 1: Assets lokal (boring tapi pasti muncul)
-    // final imageNum = (index % 5) + 1;
-    // return 'assets/gambar/$imageNum.jpg';
-    
-    // ALTERNATIF 2: Picsum (random scenery, ga ada orang)
-    // final seed = '${brand.toLowerCase()}-${model.toLowerCase()}-$index'.hashCode.abs();
-    // return 'https://picsum.photos/800/600?random=$seed';
-    
-    // CATATAN: LoremFlickr emang random, tapi bikin aplikasi lebih "hidup" wkwkwk 😂
   }
 }

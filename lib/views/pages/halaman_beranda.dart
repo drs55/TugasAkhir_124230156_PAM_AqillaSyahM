@@ -77,20 +77,8 @@ class _HalamanBerandaState extends State<HalamanBeranda> {
     _idApi.clear();
     final lokal = await ServiceMobil.getDaftarMobil();
     
-    // Fetch dari NHTSA API (Real API Gratis!) - Multiple brands
-    final List<ModelMobil> apiData = [];
-    
-    // Fetch berbagai brand (2 mobil per brand = total 10 mobil)
-    final brands = ['Honda', 'Toyota', 'BMW', 'Nissan', 'Ford'];
-    for (final brand in brands) {
-      try {
-        final mobils = await ServiceMobilAPI.fetchFromNHTSA(brand: brand);
-        // Ambil 2 mobil pertama dari setiap brand
-        apiData.addAll(mobils.take(2));
-      } catch (e) {
-        // Skip jika gagal fetch brand tertentu
-      }
-    }
+    // Fetch dari NHTSA API - Sport Cars (Hardcoded 15 mobil)
+    final apiData = await ServiceMobilAPI.fetchFromNHTSA();
 
     // Gabung & dedup id (jika bentrok modifikasi id API)
     final Map<String, ModelMobil> map = { for (final m in lokal) m.id: m };
