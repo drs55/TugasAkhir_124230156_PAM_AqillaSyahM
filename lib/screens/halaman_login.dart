@@ -1,51 +1,47 @@
 import 'package:flutter/material.dart';
-import '../../models/services/service_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../logic/services/service_auth.dart';
+import 'halaman_register.dart';
 import 'halaman_beranda.dart';
 
 // ============================================================================
-// 🖥️ SCREEN/UI - Halaman Register
+// 🖥️ SCREEN/UI - Halaman Login
 // ============================================================================
-class HalamanRegister extends StatefulWidget {
-  const HalamanRegister({super.key});
+class HalamanLogin extends StatefulWidget {
+  const HalamanLogin({super.key});
 
   @override
-  State<HalamanRegister> createState() => _HalamanRegisterState();
+  State<HalamanLogin> createState() => _HalamanLoginState();
 }
 
 // ============================================================================
-// 🎮 CONTROLLER/LOGIC - State management untuk Register
+// 🎮 CONTROLLER/LOGIC - State management untuk Login
 // ============================================================================
-class _HalamanRegisterState extends State<HalamanRegister> {
+class _HalamanLoginState extends State<HalamanLogin> {
   // --- Form Controllers ---
   final _formKey = GlobalKey<FormState>();
-  final _namaController = TextEditingController();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _konfirmasiPasswordController = TextEditingController();
   
   // --- State Variables ---
   bool _sedangMemuat = false;
   bool _sembunyikanPassword = true;
-  bool _sembunyikanKonfirmasiPassword = true;
 
   // --- Lifecycle Methods ---
   @override
   void dispose() {
-    _namaController.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
-    _konfirmasiPasswordController.dispose();
     super.dispose();
   }
 
-  // --- CONTROLLER METHOD: Proses Register ---
-  Future<void> _register() async {
+  // --- CONTROLLER METHOD: Proses Login ---
+  Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _sedangMemuat = true);
 
-    final result = await ServiceAuth.register(
-      nama: _namaController.text.trim(),
+    final result = await ServiceAuth.login(
       username: _usernameController.text.trim(),
       password: _passwordController.text,
     );
@@ -55,18 +51,9 @@ class _HalamanRegisterState extends State<HalamanRegister> {
     if (!mounted) return;
 
     if (result['success']) {
-      // Register berhasil, navigate ke home
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result['message']),
-          backgroundColor: Colors.green,
-        ),
-      );
-      
-      // Auto login setelah register
-      Navigator.of(context).pushAndRemoveUntil(
+      // Login berhasil, navigate ke home
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const HalamanBeranda()),
-        (route) => false,
       );
     } else {
       // Tampilkan error
@@ -97,36 +84,68 @@ class _HalamanRegisterState extends State<HalamanRegister> {
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              // AppBar
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(25),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    // Logo atau Icon
+                    Image.asset(
+                      'assets/logo/1.png',
+                      width: 250,
+                      height: 250,
+                      errorBuilder: (context, error, stackTrace) {
+                        // Fallback jika logo belum ada
+                        return Container(
+                          padding: const EdgeInsets.all(30),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 20,
+                                spreadRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.directions_car,
+                            size: 80,
+                            color: Color(0xFF2193b0),
+                          ),
+                        );
+                      },
                     ),
-                    const Text(
-                      'Daftar Akun Baru',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    const SizedBox(height: 30),
+
+                    // Title
+                    Text(
+                      'HexoCar',
+                      style: GoogleFonts.poppins(
+                        fontSize: 42,
+                        fontWeight: FontWeight.w700,
                         color: Colors.white,
+                        letterSpacing: 1.5,
                       ),
                     ),
-                  ],
-                ),
-              ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Marketplace Mobil Terpercaya',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: Colors.white.withOpacity(0.9),
+                        fontWeight: FontWeight.w300,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 50),
 
-              // Form
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24),
-                  child: Form(
-                    key: _formKey,
-                    child: Container(
+                    // Card Login
+                    Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -142,56 +161,25 @@ class _HalamanRegisterState extends State<HalamanRegister> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // Logo
-                          Center(
-                            child: Image.asset(
-                              'assets/logo/2.png',
-                              width: 200,
-                              height: 200,
-                              errorBuilder: (context, error, stackTrace) {
-                                // Fallback jika logo belum ada
-                                return const Icon(
-                                  Icons.directions_car,
-                                  size: 60,
-                                  color: Color(0xFF2193b0),
-                                );
-                              },
+                          const Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF2193b0),
                             ),
+                            textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 20),
-                          
-                          // Nama Lengkap
-                          TextFormField(
-                            controller: _namaController,
-                            decoration: InputDecoration(
-                              labelText: 'Nama Lengkap *',
-                              hintText: 'Masukkan nama lengkap',
-                              prefixIcon: const Icon(Icons.person_outline),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[50],
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Nama harus diisi';
-                              }
-                              if (value.length < 3) {
-                                return 'Nama minimal 3 karakter';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 24),
 
-                          // Username (Required)
+                          // Username Field
                           TextFormField(
                             controller: _usernameController,
+                            keyboardType: TextInputType.text,
                             decoration: InputDecoration(
-                              labelText: 'Username *',
+                              labelText: 'Username',
                               hintText: 'Masukkan username',
-                              prefixIcon: const Icon(Icons.account_circle_outlined),
+                              prefixIcon: const Icon(Icons.person_outline),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -205,21 +193,18 @@ class _HalamanRegisterState extends State<HalamanRegister> {
                               if (value.length < 3) {
                                 return 'Username minimal 3 karakter';
                               }
-                              if (value.contains(' ')) {
-                                return 'Username tidak boleh mengandung spasi';
-                              }
                               return null;
                             },
                           ),
                           const SizedBox(height: 16),
 
-                          // Password
+                          // Password Field
                           TextFormField(
                             controller: _passwordController,
                             obscureText: _sembunyikanPassword,
                             decoration: InputDecoration(
-                              labelText: 'Password *',
-                              hintText: 'Minimal 6 karakter',
+                              labelText: 'Password',
+                              hintText: '••••••••',
                               prefixIcon: const Icon(Icons.lock_outline),
                               suffixIcon: IconButton(
                                 icon: Icon(
@@ -249,51 +234,13 @@ class _HalamanRegisterState extends State<HalamanRegister> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 16),
-
-                          // Konfirmasi Password
-                          TextFormField(
-                            controller: _konfirmasiPasswordController,
-                            obscureText: _sembunyikanKonfirmasiPassword,
-                            decoration: InputDecoration(
-                              labelText: 'Konfirmasi Password *',
-                              hintText: 'Ketik ulang password',
-                              prefixIcon: const Icon(Icons.lock_outline),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _sembunyikanKonfirmasiPassword
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _sembunyikanKonfirmasiPassword = !_sembunyikanKonfirmasiPassword;
-                                  });
-                                },
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[50],
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Konfirmasi password harus diisi';
-                              }
-                              if (value != _passwordController.text) {
-                                return 'Password tidak cocok';
-                              }
-                              return null;
-                            },
-                          ),
                           const SizedBox(height: 24),
 
-                          // Register Button
+                          // Login Button
                           SizedBox(
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: _sedangMemuat ? null : _register,
+                              onPressed: _sedangMemuat ? null : _login,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF2193b0),
                                 foregroundColor: Colors.white,
@@ -312,7 +259,7 @@ class _HalamanRegisterState extends State<HalamanRegister> {
                                       ),
                                     )
                                   : const Text(
-                                      'Daftar',
+                                      'Login',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -322,18 +269,25 @@ class _HalamanRegisterState extends State<HalamanRegister> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Login Link
+                          // Register Link
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Text(
-                                'Sudah punya akun? ',
+                                'Belum punya akun? ',
                                 style: TextStyle(color: Colors.grey),
                               ),
                               TextButton(
-                                onPressed: () => Navigator.pop(context),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const HalamanRegister(),
+                                    ),
+                                  );
+                                },
                                 child: const Text(
-                                  'Login',
+                                  'Daftar',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xFF2193b0),
@@ -345,10 +299,10 @@ class _HalamanRegisterState extends State<HalamanRegister> {
                         ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),

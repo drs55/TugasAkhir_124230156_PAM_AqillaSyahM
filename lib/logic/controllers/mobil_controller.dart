@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/model_mobil.dart';
-import '../models/services/service_mobil.dart';
+import '../services/service_mobil.dart';
 
 class MobilController extends ChangeNotifier {
   List<ModelMobil> _daftarMobil = [];

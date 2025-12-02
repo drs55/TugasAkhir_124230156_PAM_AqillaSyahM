@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../models/services/service_mobil.dart';
-import '../../models/model_mobil.dart';
-import '../../models/services/service_auth.dart';
-import '../../models/model_user.dart';
+import '../logic/services/service_mobil.dart';
+import '../logic/models/model_mobil.dart';
+import '../logic/services/service_auth.dart';
+import '../logic/models/model_user.dart';
 import 'halaman_login.dart';
 import 'halaman_riwayat_transaksi.dart';
 
@@ -1177,7 +1177,7 @@ class _HalamanProfilState extends State<HalamanProfil> {
                     ),
                   ),
                   child: const Text(
-                    'Mata kuliah Pemrograman Aplikasi Mobile sangat menarik dan memberikan banyak pengalaman praktis dalam mengembangkan aplikasi mobile. Materi yang diajarkan sangat relevan dengan kebutuhan industri saat ini, terutama dalam penggunaan Flutter framework. Saya merasa terbantu dengan banyaknya hands-on project yang membuat pemahaman saya tentang mobile development menjadi lebih mendalam.',
+                    'Mata kuliah Pemrograman Aplikasi Mobile sangat menarik dan memberikan banyak pengalaman praktis dalam mengembangkan aplikasi mobile. terimakasi pada teman saya yang membantu dan menemani di discord dan real life, tugas ini buat saya tidur ga nyeyak sampe buat gering, terima kasih untuk mata kuliah pemerograman aplikasi mobile, semoga saya menjadi lebih baik amin',
                     style: TextStyle(
                       fontSize: 13,
                       height: 1.5,

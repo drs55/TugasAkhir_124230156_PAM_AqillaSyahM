@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../models/services/service_auth.dart';
+import '../logic/services/service_auth.dart';
 import 'halaman_login.dart';
 import 'halaman_beranda.dart';
 

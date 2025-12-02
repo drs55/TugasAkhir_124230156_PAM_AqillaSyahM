@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'views/pages/halaman_splash.dart';
-import 'models/hive_service.dart';
-import 'models/services/service_auth.dart';
-import 'models/services/service_notifikasi.dart';
+import 'screens/halaman_splash.dart';
+import 'logic/models/hive_service.dart';
+import 'logic/services/service_auth.dart';
+import 'logic/services/service_notifikasi.dart';
+import 'styles/app_theme.dart';
 
 void main() async {
   // Pastikan Flutter binding sudah diinisialisasi
@@ -28,19 +29,7 @@ class AplikasiHexoCar extends StatelessWidget {
     return MaterialApp(
       title: 'HexoCar',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2193b0),
-          primary: const Color(0xFF2193b0),
-          secondary: const Color(0xFF6dd5ed),
-        ),
-        useMaterial3: true,
-        fontFamily: 'Roboto',
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          elevation: 0,
-        ),
-      ),
+      theme: AppTheme.lightTheme,
       home: const HalamanSplash(),
     );
   }

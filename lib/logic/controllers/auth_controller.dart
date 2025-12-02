@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/services/service_auth.dart';
+import '../services/service_auth.dart';
 import '../models/model_user.dart';
 
 class AuthController extends ChangeNotifier {

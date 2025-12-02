@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../models/model_transaksi.dart';
-import '../../models/services/service_transaksi.dart';
+import '../logic/models/model_transaksi.dart';
+import '../logic/services/service_transaksi.dart';
 
 class HalamanRiwayatTransaksi extends StatefulWidget {
   const HalamanRiwayatTransaksi({super.key});
@@ -31,11 +31,13 @@ class _HalamanRiwayatTransaksiState extends State<HalamanRiwayatTransaksi> {
   
   Color _getStatusColor(String status) {
     switch (status) {
+      case 'Berhasil':
       case 'Completed':
         return Colors.green;
       case 'Pending':
         return Colors.orange;
       case 'Cancelled':
+      case 'Dibatalkan':
         return Colors.red;
       default:
         return Colors.grey;
@@ -125,7 +127,7 @@ class _HalamanRiwayatTransaksiState extends State<HalamanRiwayatTransaksi> {
                       _SummaryItem(
                         icon: Icons.check_circle,
                         label: 'Selesai',
-                        value: '${_riwayatTransaksi.where((t) => t.status == 'Completed').length}',
+                        value: '${_riwayatTransaksi.where((t) => t.status == 'Berhasil' || t.status == 'Completed').length}',
                       ),
                     ],
                   ),
@@ -435,36 +437,192 @@ class _HalamanRiwayatTransaksiState extends State<HalamanRiwayatTransaksi> {
   }
   
   void _showDetailTransaksi(BuildContext context, ModelTransaksi transaksi) {
+    final formatTanggal = '${transaksi.tanggalTransaksi.day}/${transaksi.tanggalTransaksi.month}/${transaksi.tanggalTransaksi.year}';
+    final formatJam = '${transaksi.tanggalTransaksi.hour.toString().padLeft(2, '0')}:${transaksi.tanggalTransaksi.minute.toString().padLeft(2, '0')}';
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Detail Transaksi'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _DetailRow('ID Transaksi', transaksi.id),
-              _DetailRow('Mobil', transaksi.namaMobil),
-              _DetailRow('Harga', transaksi.hargaMobil),
-              _DetailRow('Pembeli', transaksi.namaPembeli),
-              _DetailRow('Telepon', transaksi.nomorTelepon),
-              _DetailRow('Metode Pembayaran', transaksi.metodePembayaran),
-              if (transaksi.mataUang != null)
-                _DetailRow('Mata Uang', transaksi.mataUang!),
-              if (transaksi.jumlahPembayaran != null)
-                _DetailRow('Jumlah Bayar', transaksi.jumlahPembayaran!),
-              _DetailRow('Tanggal', _formatTanggal(transaksi.tanggalTransaksi)),
-              _DetailRow('Status', transaksi.status),
-              if (transaksi.catatan != null)
-                _DetailRow('Catatan', transaksi.catatan!),
-            ],
+        title: const Text(
+          'Detail Transaksi',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // ID Transaksi
+                Text(
+                  'ID: ${transaksi.id}',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                
+                // Info Mobil
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.blue.shade200),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.directions_car, color: Colors.blue.shade700, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          transaksi.namaMobil,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue.shade700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                
+                // Tanggal & Waktu
+                _buildSimpleRow('Tanggal', formatTanggal),
+                _buildSimpleRow('Waktu', formatJam),
+                
+                const Divider(height: 24),
+                
+                // Data Pembeli
+                Text(
+                  'DATA PEMBELI',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _buildSimpleRow('Nama', transaksi.namaPembeli),
+                _buildSimpleRow('Username', transaksi.emailPembeli),
+                if (transaksi.nomorTelepon.isNotEmpty)
+                  _buildSimpleRow('Telepon', transaksi.nomorTelepon),
+                
+                const Divider(height: 24),
+                
+                // Detail Pembayaran
+                Text(
+                  'DETAIL PEMBAYARAN',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _buildSimpleRow('Harga Mobil', transaksi.hargaMobil),
+                if (transaksi.biayaPengiriman != null && transaksi.biayaPengiriman!.isNotEmpty)
+                  _buildSimpleRow('Jasa Kirim', transaksi.biayaPengiriman!),
+                if (transaksi.opsiPengiriman != null)
+                  _buildSimpleRow('Opsi Pengiriman', transaksi.opsiPengiriman!),
+                
+                const Divider(height: 24),
+                
+                // Info Transaksi
+                Text(
+                  'INFO TRANSAKSI',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _buildSimpleRow('Metode Pembayaran', transaksi.metodePembayaran),
+                if (transaksi.mataUang != null)
+                  _buildSimpleRow('Mata Uang', transaksi.mataUang!),
+                _buildSimpleRow('Status', transaksi.status, valueColor: Colors.green),
+                if (transaksi.catatan != null && transaksi.catatan!.isNotEmpty)
+                  _buildSimpleRow('Catatan', transaksi.catatan!),
+                
+                const Divider(height: 24),
+                
+                // Total
+                if (transaksi.jumlahPembayaran != null)
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade700,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'TOTAL',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          transaksi.jumlahPembayaran!,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Tutup'),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildSimpleRow(String label, String value, {Color? valueColor}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[600],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: valueColor ?? Colors.black87,
+              ),
+            ),
           ),
         ],
       ),
@@ -505,40 +663,6 @@ class _SummaryItem extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _DetailRow extends StatelessWidget {
-  final String label;
-  final String value;
-  
-  const _DetailRow(this.label, this.value);
-  
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

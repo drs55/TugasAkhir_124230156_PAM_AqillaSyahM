@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../model_mobil.dart';
+import '../models/model_mobil.dart';
 
 /// Service untuk mengelola data mobil dengan penyimpanan lokal
 /// Menggunakan SharedPreferences agar data tidak hilang saat restart

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:crypto/crypto.dart';
-import '../model_user.dart';
+import '../models/model_user.dart';
 
 /// Service untuk mengelola autentikasi dan data user dengan Hive Database
 class ServiceAuth {

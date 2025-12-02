@@ -30,13 +30,15 @@ class ModelTransaksiAdapter extends TypeAdapter<ModelTransaksi> {
       tanggalTransaksi: fields[10] as DateTime,
       status: fields[11] as String,
       catatan: fields[12] as String?,
+      opsiPengiriman: fields[13] as String?,
+      biayaPengiriman: fields[14] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ModelTransaksi obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -62,7 +64,11 @@ class ModelTransaksiAdapter extends TypeAdapter<ModelTransaksi> {
       ..writeByte(11)
       ..write(obj.status)
       ..writeByte(12)
-      ..write(obj.catatan);
+      ..write(obj.catatan)
+      ..writeByte(13)
+      ..write(obj.opsiPengiriman)
+      ..writeByte(14)
+      ..write(obj.biayaPengiriman);
   }
 
   @override

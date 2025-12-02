@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/model_transaksi.dart';
-import '../models/services/service_transaksi.dart';
+import '../services/service_transaksi.dart';
 
 class TransaksiController extends ChangeNotifier {
   List<ModelTransaksi> _daftarTransaksi = [];

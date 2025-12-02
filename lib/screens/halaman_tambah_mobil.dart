@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import '../../models/model_mobil.dart';
-import '../../models/services/service_mobil.dart';
+import '../logic/models/model_mobil.dart';
+import '../logic/services/service_mobil.dart';
 import 'package:intl/intl.dart';
 
 // ============================================================================

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/services/service_mobil_api.dart';
-import '../../models/model_mobil.dart';
+import '../logic/services/service_mobil_api.dart';
+import '../logic/models/model_mobil.dart';
 import 'halaman_beli_mobil.dart'; // Ganti ke halaman beli mobil
 
 /// Halaman untuk menampilkan daftar mobil dari API

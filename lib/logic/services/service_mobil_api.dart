@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../model_mobil.dart';
+import '../models/model_mobil.dart';
 
 /// Service untuk fetch data mobil dari NHTSA API (Real API - GRATIS!)
 /// NHTSA = National Highway Traffic Safety Administration (US Government API)

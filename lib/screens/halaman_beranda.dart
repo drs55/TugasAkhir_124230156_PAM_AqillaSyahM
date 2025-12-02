@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'halaman_profil.dart';
 import 'halaman_beli_mobil.dart';
 import 'halaman_tambah_mobil.dart';
-import '../../models/model_mobil.dart';
-import '../../models/model_user.dart';
-import '../../models/services/service_mobil.dart';
-import '../../models/services/service_mobil_api.dart';
-import '../../models/services/service_auth.dart';
+import '../logic/models/model_mobil.dart';
+import '../logic/models/model_user.dart';
+import '../logic/services/service_mobil.dart';
+import '../logic/services/service_mobil_api.dart';
+import '../logic/services/service_auth.dart';
 
 // ============================================================================
 // 🖥️ SCREEN/UI - Halaman Beranda (Home)
@@ -709,13 +709,45 @@ class _HalamanBerandaState extends State<HalamanBeranda> {
                                 );
                               },
                             )
-                          : Image.memory(
-                              _decodeBase64(mobil.gambar),
-                              width: double.infinity,
-                              height: 200,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
+                          : () {
+                              try {
+                                final bytes = _decodeBase64(mobil.gambar);
+                                if (bytes.isEmpty) {
+                                  return Container(
+                                    width: double.infinity,
+                                    height: 200,
+                                    color: Colors.grey[300],
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.directions_car,
+                                        size: 80,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return Image.memory(
+                                  bytes,
+                                  width: double.infinity,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color: Colors.grey[300],
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.directions_car,
+                                          size: 80,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              } catch (e) {
                                 return Container(
+                                  width: double.infinity,
+                                  height: 200,
                                   color: Colors.grey[300],
                                   child: const Center(
                                     child: Icon(
@@ -725,8 +757,8 @@ class _HalamanBerandaState extends State<HalamanBeranda> {
                                     ),
                                   ),
                                 );
-                              },
-                            ),
+                              }
+                            }(),
                 ),
                 // Badge Tahun
                 Positioned(

@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     
     <application
-        android:label="bismmilah_ta"
+        android:label="Mobil App V3"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

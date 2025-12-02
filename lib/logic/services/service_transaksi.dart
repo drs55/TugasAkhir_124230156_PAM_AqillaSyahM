@@ -1,5 +1,5 @@
-import '../model_transaksi.dart';
-import '../hive_service.dart';
+import '../models/model_transaksi.dart';
+import '../models/hive_service.dart';
 
 /// Service untuk mengelola transaksi dengan Hive Database
 class ServiceTransaksi {

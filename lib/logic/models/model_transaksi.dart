@@ -43,6 +43,12 @@ class ModelTransaksi extends HiveObject {
   
   @HiveField(12)
   final String? catatan;
+  
+  @HiveField(13)
+  final String? opsiPengiriman; // Ambil di Tempat, Kirim ke Rumah
+  
+  @HiveField(14)
+  final String? biayaPengiriman; // Biaya pengiriman jika ada
 
   ModelTransaksi({
     required this.id,
@@ -58,6 +64,8 @@ class ModelTransaksi extends HiveObject {
     required this.tanggalTransaksi,
     this.status = 'Completed',
     this.catatan,
+    this.opsiPengiriman,
+    this.biayaPengiriman,
   });
 
   // Convert to Map untuk export/sharing
@@ -76,6 +84,8 @@ class ModelTransaksi extends HiveObject {
       'tanggalTransaksi': tanggalTransaksi.toIso8601String(),
       'status': status,
       'catatan': catatan,
+      'opsiPengiriman': opsiPengiriman,
+      'biayaPengiriman': biayaPengiriman,
     };
   }
 
@@ -95,6 +105,8 @@ class ModelTransaksi extends HiveObject {
       tanggalTransaksi: DateTime.parse(map['tanggalTransaksi']),
       status: map['status'] ?? 'Completed',
       catatan: map['catatan'],
+      opsiPengiriman: map['opsiPengiriman'],
+      biayaPengiriman: map['biayaPengiriman'],
     );
   }
 }
